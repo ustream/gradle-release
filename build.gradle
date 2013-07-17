@@ -1,5 +1,6 @@
 apply plugin: 'groovy'
 apply plugin: 'idea'
+apply plugin: 'maven'
 
 defaultTasks 'clean', 'build'
 
@@ -14,3 +15,17 @@ dependencies {
 	testCompile "junit:junit:$junitVersion",
 			"org.ajoberstar:gradle-git:$gradleGitVersion"
 }
+
+uploadArchives {
+  repositories.mavenDeployer {
+    snapshotRepository(url: project.'archiva.repo.snapshot') {
+      authentication(userName: project.'archiva.credentials.user', password: project.'archiva.credentials.pass')
+      snapshots()
+    }
+    repository(url: project.'archiva.repo.internal') {
+      authentication(userName: project.'archiva.credentials.user', password: project.'archiva.credentials.pass')
+      releases()
+    }
+  }
+}
+
